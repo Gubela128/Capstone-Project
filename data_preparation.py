@@ -3,6 +3,7 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 
+
 class DataPreparation:
     def __init__(self):
         nltk.download('stopwords', quiet=True)
@@ -11,7 +12,7 @@ class DataPreparation:
         self.lemmatizer = WordNetLemmatizer()
 
     def lower_case(self, data):
-        data['text'] = data['text'].str.lower()
+        data['text'] = data['text'].lower()
         return data
 
     def remove_stopwords(self, data):
