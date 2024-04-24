@@ -48,11 +48,6 @@ class DataPreparation:
             item['lemmatized_text'] = " ".join(lemmatized_words)
         return data
     
-    # def pos_tagging(self, data):
-    #     for item in data:
-    #         item['text_pos_tagged'] = nltk.pos_tag(word_tokenize(item['text_without_stopwords']))
-    #     return data
-    
     def remove_special_characters(self, data):
         for item in data:
             item['text_without_special_characters'] = ""
@@ -62,4 +57,9 @@ class DataPreparation:
                         item['text_without_special_characters'] += character
             # Remove consecutive spaces
             item['text_without_special_characters'] = ' '.join(item['text_without_special_characters'].split())
+        return data
+
+    def pos_tagging(self, data):
+        for item in data:
+            item['text_pos_tagged'] = nltk.pos_tag(word_tokenize(item['lemmatized_text']))
         return data
