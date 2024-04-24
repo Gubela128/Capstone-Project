@@ -33,7 +33,7 @@ class DataPreparation:
 
     def stem_text(self, data):
         for item in data:
-            item['stemmed_data'] = self.stem_text_string(item['text_without_stopwords'])
+            item['stemmed_data'] = self.stem_text_string(item['text_without_special_characters'])
         return data
 
     def stem_text_string(self, text):
@@ -43,7 +43,23 @@ class DataPreparation:
 
     def lemmatize_text(self, data):
         for item in data:
-            word_tokens = word_tokenize(item['text_without_stopwords'])
+            word_tokens = word_tokenize(item['text_without_special_characters'])
             lemmatized_words = [self.lemmatizer.lemmatize(word) for word in word_tokens]
             item['lemmatized_text'] = " ".join(lemmatized_words)
+        return data
+    
+    # def pos_tagging(self, data):
+    #     for item in data:
+    #         item['text_pos_tagged'] = nltk.pos_tag(word_tokenize(item['text_without_stopwords']))
+    #     return data
+    
+    def remove_special_characters(self, data):
+        for item in data:
+            item['text_without_special_characters'] = ""
+            for word in item['text_without_stopwords']:
+                for character in word:
+                    if (character >= chr(65) and character <= chr(90)) or (character >= chr(97) and character <= chr(122) or character == " "):
+                        item['text_without_special_characters'] += character
+            # Remove consecutive spaces
+            item['text_without_special_characters'] = ' '.join(item['text_without_special_characters'].split())
         return data
