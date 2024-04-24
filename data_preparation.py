@@ -1,11 +1,20 @@
+import re
+
 import nltk
 from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer, PorterStemmer
+from nltk.stem import WordNetLemmatizer
+from nltk.stem import PorterStemmer
 from nltk.tokenize import word_tokenize
-from nltk import pos_tag
 
 nltk.download('punkt')
-nltk.download('averaged_perceptron_tagger')
+
+
+# def remove_special_characters(data):
+#     for item in data:
+#         # Remove anything that is not a word character (alphanumeric) or space
+#         item['cleaned_text'] = re.sub(r'[^\w\s]', '', item['text_in_lower'])
+#     return data
+
 
 class DataPreparation:
     def __init__(self):
@@ -47,21 +56,20 @@ class DataPreparation:
             lemmatized_words = [self.lemmatizer.lemmatize(word) for word in word_tokens]
             item['lemmatized_text'] = " ".join(lemmatized_words)
         return data
-
-    def pos_tagging(self, data):
-        for item in data:
-            word_tokens = word_tokenize(item['lemmatized_text'])
-            pos_tagged_words = pos_tag(word_tokens)
-            item['pos_tagged_text'] = pos_tagged_words
-        return data
-
+    
     def remove_special_characters(self, data):
         for item in data:
             item['text_without_special_characters'] = ""
             for word in item['text_without_stopwords']:
                 for character in word:
-                    if (character >= chr(65) and character <= chr(90)) or (character >= chr(97) and character <= chr(122) or character == " "):
+                    if (chr(65) <= character <= chr(90)) or (chr(97) <= character <= chr(122) or character == " "):
                         item['text_without_special_characters'] += character
             # Remove consecutive spaces
             item['text_without_special_characters'] = ' '.join(item['text_without_special_characters'].split())
+        return data
+
+
+    def pos_tagging(self, data):
+        for item in data:
+            item['text_pos_tagged'] = nltk.pos_tag(word_tokenize(item['lemmatized_text']))
         return data
