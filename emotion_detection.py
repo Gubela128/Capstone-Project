@@ -1,5 +1,4 @@
 import json
-
 from data_preparation import DataPreparation
 
 
@@ -20,6 +19,7 @@ class EmotionDetection:
         training_data = data_preparation.remove_special_characters(training_data)
         training_data = data_preparation.lemmatize_text(training_data)
         training_data = data_preparation.stem_text(training_data)
+        training_data = data_preparation.pos_tagging(training_data)
         print(training_data[0])
 
     @classmethod

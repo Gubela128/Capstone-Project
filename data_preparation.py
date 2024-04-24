@@ -1,11 +1,11 @@
 import nltk
 from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
-from nltk.stem import PorterStemmer
+from nltk.stem import WordNetLemmatizer, PorterStemmer
 from nltk.tokenize import word_tokenize
+from nltk import pos_tag
 
 nltk.download('punkt')
-
+nltk.download('averaged_perceptron_tagger')
 
 class DataPreparation:
     def __init__(self):
@@ -47,12 +47,14 @@ class DataPreparation:
             lemmatized_words = [self.lemmatizer.lemmatize(word) for word in word_tokens]
             item['lemmatized_text'] = " ".join(lemmatized_words)
         return data
-    
-    # def pos_tagging(self, data):
-    #     for item in data:
-    #         item['text_pos_tagged'] = nltk.pos_tag(word_tokenize(item['text_without_stopwords']))
-    #     return data
-    
+
+    def pos_tagging(self, data):
+        for item in data:
+            word_tokens = word_tokenize(item['lemmatized_text'])
+            pos_tagged_words = pos_tag(word_tokens)
+            item['pos_tagged_text'] = pos_tagged_words
+        return data
+
     def remove_special_characters(self, data):
         for item in data:
             item['text_without_special_characters'] = ""
