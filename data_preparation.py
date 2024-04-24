@@ -1,12 +1,15 @@
 import nltk
 from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
 from nltk.tokenize import word_tokenize
 
 
 class DataPreparation:
     def __init__(self):
         nltk.download('stopwords', quiet=True)
+        nltk.download('wordnet', quiet=True)
         self.stop_words = set(stopwords.words('english'))
+        self.stemmer = PorterStemmer()
 
     def lower_case(self, data):
         for item in data:
