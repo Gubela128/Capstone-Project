@@ -1,3 +1,5 @@
+import re
+
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
@@ -5,6 +7,13 @@ from nltk.stem import PorterStemmer
 from nltk.tokenize import word_tokenize
 
 nltk.download('punkt')
+
+
+def remove_special_characters(data):
+    for item in data:
+        # Remove anything that is not a word character (alphanumeric) or space
+        item['cleaned_text'] = re.sub(r'[^\w\s]', '', item['text_in_lower'])
+    return data
 
 
 class DataPreparation:
@@ -33,7 +42,7 @@ class DataPreparation:
 
     def stem_text(self, data):
         for item in data:
-            item['stemmed_data'] = self.stem_text_string(item['text_without_stopwords'])
+            item['stemmed_data'] = self.stem_text_string(item['cleaned_text'])
         return data
 
     def stem_text_string(self, text):
@@ -43,7 +52,10 @@ class DataPreparation:
 
     def lemmatize_text(self, data):
         for item in data:
-            word_tokens = word_tokenize(item['text_without_stopwords'])
+            word_tokens = word_tokenize(item['cleaned_text'])
             lemmatized_words = [self.lemmatizer.lemmatize(word) for word in word_tokens]
             item['lemmatized_text'] = " ".join(lemmatized_words)
         return data
+
+
+
