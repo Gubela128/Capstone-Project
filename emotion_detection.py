@@ -18,7 +18,8 @@ class EmotionDetection:
         training_data = data_preparation.lower_case(training_data)
         training_data = data_preparation.remove_stopwords(training_data)
         training_data = data_preparation.lemmatize_text(training_data)
-        print(training_data[1])
+        training_data = data_preparation.stem_text(training_data)
+        print(training_data[7])
 
     @classmethod
     def main(cls):

@@ -1,8 +1,11 @@
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+from nltk.stem import PorterStemmer
 from nltk.tokenize import word_tokenize
+
 nltk.download('punkt')
+
 
 class DataPreparation:
     def __init__(self):
@@ -10,6 +13,7 @@ class DataPreparation:
         nltk.download('wordnet', quiet=True)
         self.stop_words = set(stopwords.words('english'))
         self.lemmatizer = WordNetLemmatizer()
+        self.stemmer = PorterStemmer()
 
     def lower_case(self, data):
         for item in data:
@@ -26,6 +30,16 @@ class DataPreparation:
                     else:
                         item['text_without_stopwords'] = item['text_without_stopwords'] + " " + word
         return data
+
+    def stem_text(self, data):
+        for item in data:
+            item['stemmed_data'] = self.stem_text_string(item['text_without_stopwords'])
+        return data
+
+    def stem_text_string(self, text):
+        tokens = word_tokenize(text)
+        stemmed_tokens = [self.stemmer.stem(word) for word in tokens]
+        return ' '.join(stemmed_tokens)
 
     def lemmatize_text(self, data):
         for item in data:
