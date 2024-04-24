@@ -7,13 +7,7 @@ from nltk.stem import PorterStemmer
 from nltk.tokenize import word_tokenize
 
 nltk.download('punkt')
-
-
-# def remove_special_characters(data):
-#     for item in data:
-#         # Remove anything that is not a word character (alphanumeric) or space
-#         item['cleaned_text'] = re.sub(r'[^\w\s]', '', item['text_in_lower'])
-#     return data
+nltk.download('averaged_perceptron_tagger')
 
 
 class DataPreparation:
@@ -56,7 +50,7 @@ class DataPreparation:
             lemmatized_words = [self.lemmatizer.lemmatize(word) for word in word_tokens]
             item['lemmatized_text'] = " ".join(lemmatized_words)
         return data
-    
+
     def remove_special_characters(self, data):
         for item in data:
             item['text_without_special_characters'] = ""
@@ -64,7 +58,6 @@ class DataPreparation:
                 for character in word:
                     if (chr(65) <= character <= chr(90)) or (chr(97) <= character <= chr(122) or character == " "):
                         item['text_without_special_characters'] += character
-            # Remove consecutive spaces
             item['text_without_special_characters'] = ' '.join(item['text_without_special_characters'].split())
         return data
 
