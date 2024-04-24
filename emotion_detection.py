@@ -16,6 +16,7 @@ class EmotionDetection:
         training_data = cls.read_data('data/training.json')
         data_preparation = DataPreparation()
         training_data = data_preparation.lower_case(training_data)
+        training_data = data_preparation.remove_stopwords(training_data)
         print(training_data[0])
 
     @classmethod
