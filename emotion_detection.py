@@ -25,5 +25,6 @@ class EmotionDetection:
     def main(cls):
         cls.save_prepared_data()
 
+
 if __name__ == '__main__':
     EmotionDetection.main()
