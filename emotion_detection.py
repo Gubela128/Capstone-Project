@@ -23,6 +23,7 @@ class EmotionDetection:
         training_data = data_preparation.pos_tagging(training_data)
         with open('data/prepared_training_data.json', 'w') as file:
             json.dump(training_data, file, indent=4)
+
     @classmethod
     def main(cls):
         cls.save_prepared_data()

@@ -1,6 +1,3 @@
-import numpy as np
-
-
 class NaiveBayesClassifier:
     def __init__(self):
         self.emotion_classes = {
@@ -41,12 +38,12 @@ class NaiveBayesClassifier:
                                                        (total_words + len(self.class_vocabulary_size[emotion_name])))
 
     def predict(self, lemmatized_text):
-        posterior_probs = {emotion: np.log(self.class_probs[emotion]) for emotion in self.emotion_classes.values()}
+        posterior_probs = {emotion: self.class_probs[emotion] for emotion in self.emotion_classes.values()}
 
         for word in lemmatized_text.split():
             for emotion_name in self.emotion_classes.values():
                 if word in self.word_probs[emotion_name]:
-                    posterior_probs[emotion_name] += np.log(self.word_probs[emotion_name][word])
+                    posterior_probs[emotion_name] *= self.word_probs[emotion_name][word]
 
         predicted_emotion = max(posterior_probs, key=posterior_probs.get)
         return predicted_emotion
