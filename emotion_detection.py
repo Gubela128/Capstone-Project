@@ -19,6 +19,7 @@ class EmotionDetection:
         training_data = data_preparation.remove_stopwords(training_data)
         training_data = data_preparation.remove_special_characters(training_data)
         training_data = data_preparation.lemmatize_text(training_data)
+        training_data = data_preparation.handle_negations(training_data)  # Added step
         training_data = data_preparation.stem_text(training_data)
         training_data = data_preparation.pos_tagging(training_data)
         with open('data/prepared_training_data.json', 'w') as file:
