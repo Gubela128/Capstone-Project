@@ -59,8 +59,27 @@ class DataPreparation:
             item['text_without_special_characters'] = ' '.join(item['text_without_special_characters'].split())
         return data
 
-
     def pos_tagging(self, data):
         for item in data:
             item['text_pos_tagged'] = nltk.pos_tag(word_tokenize(item['lemmatized_text']))
+        return data
+
+    def handle_negations(self, data):
+        negation_words = {"not", "never", "no", "dont", "doesnt", "didnt", "isnt", "arent", "wasnt", "werent",
+                          "havent", "hasnt", "hadnt"}
+        for item in data:
+            words = item['lemmatized_text'].split()
+            new_words = []
+            skip_next = False
+            for i in range(len(words)):
+                if skip_next:
+                    skip_next = False
+                    continue
+                if words[i] in negation_words and i + 1 < len(words):
+                    new_word = words[i] + "_" + words[i + 1]
+                    new_words.append(new_word)
+                    skip_next = True
+                else:
+                    new_words.append(words[i])
+            item['negation_handled_text'] = ' '.join(new_words)
         return data
