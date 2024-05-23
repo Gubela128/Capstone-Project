@@ -40,9 +40,8 @@ def main():
         preprocessed_data = data_preparation.remove_special_characters(preprocessed_data)
         preprocessed_data = data_preparation.lemmatize_text(preprocessed_data)
         preprocessed_data = data_preparation.handle_negations(preprocessed_data)
-        print(preprocessed_data)
+
         negation_handled_text = preprocessed_data[0]['negation_handled_text']
-        print(negation_handled_text)
         predicted_emotion = classifier.predict(negation_handled_text)
         print("Predicted Emotion:", predicted_emotion, get_key_from_value(classifier.emotion_classes, predicted_emotion))
 
