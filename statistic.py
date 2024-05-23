@@ -32,7 +32,6 @@ def main():
 
         # Skip test samples with labels not in emotion_classes
         if true_label not in classifier.emotion_classes:
-            print(f"Skipping sample with unknown label: {true_label}")
             continue
 
         preprocessed_data = [{
