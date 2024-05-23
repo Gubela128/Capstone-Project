@@ -17,7 +17,7 @@ class DataPreparation:
                            'o', 'hadn', 'is', 'both', 'all',  'has', 'it', "should've", 'am', 'each', 'will', 
                            'the', 'who', 'than', "she's", 'doing', 'own', 'only', 'your', 'which', 'same', 're', 
                            'himself', 'these', 'off', 'does', 'they', 'too', 'she', 'here', 'until', 'll', 'won', 
-                           'being', 'her', 'most', 'against', 'whom', 'yourselves', 'between', 'after', 'isn', 
+                           'being', 'her', 'most', 'against', 'whom', 'yourselves', 'between', 'after', 
                            't', 'if', 'did', 'through', 'shan', 'such', "you've", "shan't", 'him', 'before', 
                            'of', 'been', 'any', 'doesn', 'other', 'about', 'or', 'once', 'why', 'some', 've', 
                            'just', 'we', 'his', 'this', 'ma', 'hers', 'were', 'having', 'can', 'as', 
@@ -25,7 +25,7 @@ class DataPreparation:
                            'at', 'itself', 'now', 'myself', 'me', 'our', 'ain', 'again', 'you', 
                            'with', 'when', 'that', 'so', 'where', 'do', 'because', 'out', 'an', 'while', 
                            "you'd", 's', 'aren', 'their', 'and', 'its', 'are', 'how', 'below', 'from', 
-                           'in', 'theirs', 'be', 'them', 'what', "that'll", 'but', 'to', 'haven', 'ourselves', 
+                           'in', 'theirs', 'be', 'them', 'what', 'but', 'to', 'haven', 'ourselves', 
                            'under', 'yours', 'for', 'themselves', 'herself', 'by'}
         self.lemmatizer = WordNetLemmatizer()
         self.stemmer = PorterStemmer()
@@ -78,22 +78,24 @@ class DataPreparation:
             item['text_pos_tagged'] = nltk.pos_tag(word_tokenize(item['lemmatized_text']))
         return data
 
-    # def handle_negations(self, data):
-    #     negation_words = {"not", "never", "no", "dont", "doesnt", "didnt", "isnt", "arent", "wasnt", "werent",
-    #                       "havent", "hasnt", "hadnt"}
-    #     for item in data:
-    #         words = item['lemmatized_text'].split()
-    #         new_words = []
-    #         skip_next = False
-    #         for i in range(len(words)):
-    #             if skip_next:
-    #                 skip_next = False
-    #                 continue
-    #             if words[i] in negation_words and i + 1 < len(words):
-    #                 new_word = words[i] + "_" + words[i + 1]
-    #                 new_words.append(new_word)
-    #                 skip_next = True
-    #             else:
-    #                 new_words.append(words[i])
-    #         item['negation_handled_text'] = ' '.join(new_words)
-    #     return data
+    def handle_negations(self, data):
+        negation_words = negation_words = {"not", "never", "no", "dont", "doesnt", "didnt", "isnt", "arent", "wasnt", "werent",
+                  "havent", "hasnt", "hadnt", "cannot", "cant", "couldnt", "shouldnt", "wont", "wouldnt",
+                  "aint", "neither", "nor", "none", "nobody", "nothing", "nowhere", "hardly", "scarcely",
+                  "barely", "hadn", "isn", "aren", "wasn", "weren", "hasn", "haven", "doesn", "didn"}
+        for item in data:
+            words = item['lemmatized_text'].split()
+            new_words = []
+            skip_next = False
+            for i in range(len(words)):
+                if skip_next:
+                    skip_next = False
+                    continue
+                if words[i] in negation_words and i + 1 < len(words):
+                    new_word = words[i] + "_" + words[i + 1]
+                    new_words.append(new_word)
+                    skip_next = True
+                else:
+                    new_words.append(words[i])
+            item['negation_handled_text'] = ' '.join(new_words)
+        return data
