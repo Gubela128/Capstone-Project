@@ -1,5 +1,4 @@
 import nltk
-from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk.stem import PorterStemmer
 from nltk.tokenize import word_tokenize
@@ -12,7 +11,21 @@ class DataPreparation:
     def __init__(self):
         nltk.download('stopwords', quiet=True)
         nltk.download('wordnet', quiet=True)
-        self.stop_words = set(stopwords.words('english'))
+        self.stop_words = {'few', 'further', 'ours', 'above', 'was', 'on', 'there', 'd', 'up', 'very',
+                           'have', 'yourself', 'those', 'over', 'then', "you'll", 'should', 'more',
+                           'o', 'hadn', 'is', 'both', 'all',  'has', 'it', "should've", 'am', 'each', 'will',
+                           'the', 'who', 'than', "she's", 'doing', 'own', 'only', 'your', 'which', 'same', 're',
+                           'himself', 'these', 'off', 'does', 'they', 'too', 'she', 'here', 'until', 'll', 'won',
+                           'being', 'her', 'most', 'against', 'whom', 'yourselves', 'between', 'after',
+                           't', 'if', 'did', 'through', 'shan', 'such', "you've", "shan't", 'him', 'before',
+                           'of', 'been', 'any', 'doesn', 'other', 'about', 'or', 'once', 'why', 'some', 've',
+                           'just', 'we', 'his', 'this', 'ma', 'hers', 'were', 'having', 'can', 'as',
+                           'my', "it's", 'y', 'he', "you're", 'down', 'i', 'm', 'into', 'had', 'a', 'during',
+                           'at', 'itself', 'now', 'myself', 'me', 'our', 'ain', 'again', 'you',
+                           'with', 'when', 'that', 'so', 'where', 'do', 'because', 'out', 'an', 'while',
+                           "you'd", 's', 'aren', 'their', 'and', 'its', 'are', 'how', 'below', 'from',
+                           'in', 'theirs', 'be', 'them', 'what', 'but', 'to', 'haven', 'ourselves',
+                           'under', 'yours', 'for', 'themselves', 'herself', 'by'}
         self.lemmatizer = WordNetLemmatizer()
         self.stemmer = PorterStemmer()
 
@@ -25,7 +38,7 @@ class DataPreparation:
         for item in data:
             item['text_without_stopwords'] = ""
             for word in item['text_in_lower'].split():
-                if word not in self.stop_words:
+                if word not in self.stop_words or word == 'not':
                     if item['text_without_stopwords'] == "":
                         item['text_without_stopwords'] = word
                     else:
@@ -59,8 +72,29 @@ class DataPreparation:
             item['text_without_special_characters'] = ' '.join(item['text_without_special_characters'].split())
         return data
 
-
     def pos_tagging(self, data):
         for item in data:
             item['text_pos_tagged'] = nltk.pos_tag(word_tokenize(item['lemmatized_text']))
+        return data
+
+    def handle_negations(self, data):
+        negation_words = negation_words = {"not", "never", "no", "dont", "doesnt", "didnt", "isnt", "arent", "wasnt", "werent",
+                  "havent", "hasnt", "hadnt", "cannot", "cant", "couldnt", "shouldnt", "wont", "wouldnt",
+                  "aint", "neither", "nor", "none", "nobody", "nothing", "nowhere", "hardly", "scarcely",
+                  "barely", "hadn", "isn", "aren", "wasn", "weren", "hasn", "haven", "doesn", "didn"}
+        for item in data:
+            words = item['lemmatized_text'].split()
+            new_words = []
+            skip_next = False
+            for i in range(len(words)):
+                if skip_next:
+                    skip_next = False
+                    continue
+                if words[i] in negation_words and i + 1 < len(words):
+                    new_word = words[i] + "_" + words[i + 1]
+                    new_words.append(new_word)
+                    skip_next = True
+                else:
+                    new_words.append(words[i])
+            item['negation_handled_text'] = ' '.join(new_words)
         return data

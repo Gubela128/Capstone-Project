@@ -5,7 +5,8 @@ class NaiveBayesClassifier:
             1: 'joy',
             2: 'love',
             3: 'anger',
-            4: 'fear'
+            4: 'fear',
+            5: 'surprise'
         }
         self.class_probs = {emotion: 0.0 for emotion in self.emotion_classes.values()}
         self.word_probs = {emotion: {} for emotion in self.emotion_classes.values()}
@@ -25,7 +26,7 @@ class NaiveBayesClassifier:
             if emotion_label not in self.emotion_classes:
                 continue
             emotion_name = self.emotion_classes[emotion_label]
-            for word in sample['lemmatized_text'].split():
+            for word in sample['negation_handled_text'].split():
                 self.class_vocabulary_size[emotion_name].add(word)
                 if word not in word_count[emotion_name]:
                     word_count[emotion_name][word] = 0
@@ -37,10 +38,10 @@ class NaiveBayesClassifier:
                 self.word_probs[emotion_name][word] = ((count + 1) /
                                                        (total_words + len(self.class_vocabulary_size[emotion_name])))
 
-    def predict(self, lemmatized_text):
+    def predict(self, negation_handled_text):
         posterior_probs = {emotion: self.class_probs[emotion] for emotion in self.emotion_classes.values()}
 
-        for word in lemmatized_text.split():
+        for word in negation_handled_text.split():
             for emotion_name in self.emotion_classes.values():
                 if word in self.word_probs[emotion_name]:
                     posterior_probs[emotion_name] *= self.word_probs[emotion_name][word]
