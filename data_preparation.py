@@ -1,5 +1,4 @@
 import nltk
-from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk.stem import PorterStemmer
 from nltk.tokenize import word_tokenize
@@ -12,20 +11,20 @@ class DataPreparation:
     def __init__(self):
         nltk.download('stopwords', quiet=True)
         nltk.download('wordnet', quiet=True)
-        self.stop_words = {'few', 'further', 'ours', 'above', 'was', 'on', 'there', 'd', 'up', 'very', 
-                           'have', 'yourself', 'those', 'over', 'then', "you'll", 'should', 'more', 
-                           'o', 'hadn', 'is', 'both', 'all',  'has', 'it', "should've", 'am', 'each', 'will', 
-                           'the', 'who', 'than', "she's", 'doing', 'own', 'only', 'your', 'which', 'same', 're', 
-                           'himself', 'these', 'off', 'does', 'they', 'too', 'she', 'here', 'until', 'll', 'won', 
-                           'being', 'her', 'most', 'against', 'whom', 'yourselves', 'between', 'after', 
-                           't', 'if', 'did', 'through', 'shan', 'such', "you've", "shan't", 'him', 'before', 
-                           'of', 'been', 'any', 'doesn', 'other', 'about', 'or', 'once', 'why', 'some', 've', 
-                           'just', 'we', 'his', 'this', 'ma', 'hers', 'were', 'having', 'can', 'as', 
-                           'my', "it's", 'y', 'he', "you're", 'down', 'i', 'm', 'into', 'had', 'a', 'during', 
-                           'at', 'itself', 'now', 'myself', 'me', 'our', 'ain', 'again', 'you', 
-                           'with', 'when', 'that', 'so', 'where', 'do', 'because', 'out', 'an', 'while', 
-                           "you'd", 's', 'aren', 'their', 'and', 'its', 'are', 'how', 'below', 'from', 
-                           'in', 'theirs', 'be', 'them', 'what', 'but', 'to', 'haven', 'ourselves', 
+        self.stop_words = {'few', 'further', 'ours', 'above', 'was', 'on', 'there', 'd', 'up', 'very',
+                           'have', 'yourself', 'those', 'over', 'then', "you'll", 'should', 'more',
+                           'o', 'hadn', 'is', 'both', 'all',  'has', 'it', "should've", 'am', 'each', 'will',
+                           'the', 'who', 'than', "she's", 'doing', 'own', 'only', 'your', 'which', 'same', 're',
+                           'himself', 'these', 'off', 'does', 'they', 'too', 'she', 'here', 'until', 'll', 'won',
+                           'being', 'her', 'most', 'against', 'whom', 'yourselves', 'between', 'after',
+                           't', 'if', 'did', 'through', 'shan', 'such', "you've", "shan't", 'him', 'before',
+                           'of', 'been', 'any', 'doesn', 'other', 'about', 'or', 'once', 'why', 'some', 've',
+                           'just', 'we', 'his', 'this', 'ma', 'hers', 'were', 'having', 'can', 'as',
+                           'my', "it's", 'y', 'he', "you're", 'down', 'i', 'm', 'into', 'had', 'a', 'during',
+                           'at', 'itself', 'now', 'myself', 'me', 'our', 'ain', 'again', 'you',
+                           'with', 'when', 'that', 'so', 'where', 'do', 'because', 'out', 'an', 'while',
+                           "you'd", 's', 'aren', 'their', 'and', 'its', 'are', 'how', 'below', 'from',
+                           'in', 'theirs', 'be', 'them', 'what', 'but', 'to', 'haven', 'ourselves',
                            'under', 'yours', 'for', 'themselves', 'herself', 'by'}
         self.lemmatizer = WordNetLemmatizer()
         self.stemmer = PorterStemmer()
@@ -39,7 +38,7 @@ class DataPreparation:
         for item in data:
             item['text_without_stopwords'] = ""
             for word in item['text_in_lower'].split():
-                if word not in self.stop_words:
+                if word not in self.stop_words or word == 'not':
                     if item['text_without_stopwords'] == "":
                         item['text_without_stopwords'] = word
                     else:

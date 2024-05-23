@@ -15,16 +15,26 @@ def main():
     emotion_detection = EmotionDetection()
     data_preparation = DataPreparation()
     classifier = NaiveBayesClassifier()
+
+    # Prepare training data
     training_data = emotion_detection.read_data('data/prepared_training_data.json')
     classifier.calculate_prior_probability(training_data)
     classifier.calculate_likelihood_probabilities(training_data)
-    correct_count = 0
 
+    # Test data processing and evaluation
     test_data = emotion_detection.read_data('data/test.json')
+    correct_count = 0
+    total_count = 0
 
     for item in test_data:
         text = item['text']
         true_label = item['label']
+
+        # Skip test samples with labels not in emotion_classes
+        if true_label not in classifier.emotion_classes:
+            print(f"Skipping sample with unknown label: {true_label}")
+            continue
+
         preprocessed_data = [{
             'text': text,
             'label': -1,
@@ -39,14 +49,24 @@ def main():
         preprocessed_data = data_preparation.remove_stopwords(preprocessed_data)
         preprocessed_data = data_preparation.remove_special_characters(preprocessed_data)
         preprocessed_data = data_preparation.lemmatize_text(preprocessed_data)
-        lemmatized_text = preprocessed_data[0]['lemmatized_text']
-        predicted_emotion = classifier.predict(lemmatized_text)
+        preprocessed_data = data_preparation.handle_negations(preprocessed_data)
 
-        if get_key_from_value(classifier.emotion_classes, predicted_emotion) == true_label:
+        negation_handled_text = preprocessed_data[0]['negation_handled_text']
+        predicted_emotion = classifier.predict(negation_handled_text)
+
+        if classifier.emotion_classes[true_label] == predicted_emotion:
             correct_count += 1
 
-    print("result: ", correct_count / len(test_data))
-    print("correct count: ", correct_count)
+        total_count += 1
+
+    if total_count > 0:
+        accuracy = correct_count / total_count
+    else:
+        accuracy = 0
+
+    print("Accuracy: ", accuracy)
+    print("Correct Count: ", correct_count)
+    print("Total Test Samples: ", total_count)
 
 
 if __name__ == "__main__":
