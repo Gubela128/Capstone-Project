@@ -31,6 +31,7 @@ def main():
             'text_without_stopwords': '',
             'text_without_special_characters': '',
             'lemmatized_text': '',
+            'negation_handled_text': '',
             'stemmed_data': '',
             'text_pos_tagged': []
         }]
@@ -38,9 +39,11 @@ def main():
         preprocessed_data = data_preparation.remove_stopwords(preprocessed_data)
         preprocessed_data = data_preparation.remove_special_characters(preprocessed_data)
         preprocessed_data = data_preparation.lemmatize_text(preprocessed_data)
-
-        lemmatized_text = preprocessed_data[0]['lemmatized_text']
-        predicted_emotion = classifier.predict(lemmatized_text)
+        preprocessed_data = data_preparation.handle_negations(preprocessed_data)
+        print(preprocessed_data)
+        negation_handled_text = preprocessed_data[0]['negation_handled_text']
+        print(negation_handled_text)
+        predicted_emotion = classifier.predict(negation_handled_text)
         print("Predicted Emotion:", predicted_emotion, get_key_from_value(classifier.emotion_classes, predicted_emotion))
 
 
