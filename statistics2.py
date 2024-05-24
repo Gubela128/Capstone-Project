@@ -1,6 +1,5 @@
 from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
-from data_preparation import DataPreparation
 from emotion_detection import EmotionDetection
 from support_vector_machine import SupportVectorMachine
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -8,7 +7,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 def main():
     emotion_detection = EmotionDetection()
-    data_preparation = DataPreparation()
     training_data = emotion_detection.read_data('data/prepared_training_data.json')
 
     X = [item['lemmatized_text'] for item in training_data]
@@ -24,9 +22,8 @@ def main():
 
     y_pred = classifier.predict(X_test)
 
-    # Map y_test to the corresponding emotion classes
     y_test = [classifier.emotion_classes[int(label)] for label in y_test]
-
+    print('statistics of support_vector_machine')
     print(classification_report(y_test, y_pred))
 
 

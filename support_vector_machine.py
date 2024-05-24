@@ -1,5 +1,6 @@
 from sklearn import svm
 
+
 class SupportVectorMachine:
     def __init__(self):
         self.emotion_classes = {
