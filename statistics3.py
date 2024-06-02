@@ -1,30 +1,25 @@
 from sklearn.metrics import classification_report
-from data_preparation import DataPreparation
-from emotion_detection import EmotionDetection
-from naive_bayes_classifier import NaiveBayesClassifier
-
-
-def get_key_from_value(dictionary, value):
-    for key, val in dictionary.items():
-        if val == value:
-            return key
-    return None
+from naive_bayes_classifier_with_library import NaiveBayesEmotionClassifier
 
 
 def main():
+    from data_preparation import DataPreparation
+    from emotion_detection import EmotionDetection
+
     emotion_detection = EmotionDetection()
     data_preparation = DataPreparation()
-    classifier = NaiveBayesClassifier()
+    classifier = NaiveBayesEmotionClassifier()
 
     training_data = emotion_detection.read_data('data/prepared_training_data.json')
-    classifier.calculate_prior_probability(training_data)
-    classifier.calculate_likelihood_probabilities(training_data)
+    classifier.train(training_data)
 
     test_data = emotion_detection.read_data('data/training.json')
 
     y_true = []
     y_pred = []
-    print('statistics of naive_bayes_classifier')
+
+
+    print('statistics of naive_bayes_classifier_with_library')
     for item in test_data:
         text = item['text']
         true_label = item['label']
