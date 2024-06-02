@@ -10,6 +10,26 @@ def get_key_from_value(dictionary, value):
     return None
 
 
+def preprocess_text(data_preparation, text):
+    preprocessed_data = [{
+        'text': text,
+        'label': -1,
+        'text_in_lower': '',
+        'text_without_stopwords': '',
+        'text_without_special_characters': '',
+        'lemmatized_text': '',
+        'negation_handled_text': '',
+        'stemmed_data': '',
+        'text_pos_tagged': []
+    }]
+    preprocessed_data = data_preparation.lower_case(preprocessed_data)
+    preprocessed_data = data_preparation.remove_stopwords(preprocessed_data)
+    preprocessed_data = data_preparation.remove_special_characters(preprocessed_data)
+    preprocessed_data = data_preparation.lemmatize_text(preprocessed_data)
+    preprocessed_data = data_preparation.handle_negations(preprocessed_data)
+    return preprocessed_data[0]['negation_handled_text']
+
+
 def main():
     emotion_detection = EmotionDetection()
     data_preparation = DataPreparation()
@@ -24,26 +44,10 @@ def main():
         if text.lower() == "exit":
             break
 
-        preprocessed_data = [{
-            'text': text,
-            'label': -1,
-            'text_in_lower': '',
-            'text_without_stopwords': '',
-            'text_without_special_characters': '',
-            'lemmatized_text': '',
-            'negation_handled_text': '',
-            'stemmed_data': '',
-            'text_pos_tagged': []
-        }]
-        preprocessed_data = data_preparation.lower_case(preprocessed_data)
-        preprocessed_data = data_preparation.remove_stopwords(preprocessed_data)
-        preprocessed_data = data_preparation.remove_special_characters(preprocessed_data)
-        preprocessed_data = data_preparation.lemmatize_text(preprocessed_data)
-        preprocessed_data = data_preparation.handle_negations(preprocessed_data)
-
-        negation_handled_text = preprocessed_data[0]['negation_handled_text']
+        negation_handled_text = preprocess_text(data_preparation, text)
         predicted_emotion = classifier.predict(negation_handled_text)
-        print("Predicted Emotion:", predicted_emotion, get_key_from_value(classifier.emotion_classes, predicted_emotion))
+        print("Predicted Emotion:", predicted_emotion,
+              get_key_from_value(classifier.emotion_classes, predicted_emotion))
 
 
 if __name__ == "__main__":
