@@ -14,6 +14,7 @@ class NaiveBayesClassifier:
         self.class_probs = {emotion: 0.0 for emotion in self.emotion_classes.values()}
         self.word_probs = {emotion: {} for emotion in self.emotion_classes.values()}
         self.class_vocabulary_size = {emotion: set() for emotion in self.emotion_classes.values()}
+        self.total_vocabulary_size = set()
 
     def calculate_prior_probability(self, data):
         total_samples = len(data)
@@ -31,6 +32,7 @@ class NaiveBayesClassifier:
             emotion_name = self.emotion_classes[emotion_label]
             for word in sample['negation_handled_text'].split():
                 self.class_vocabulary_size[emotion_name].add(word)
+                self.total_vocabulary_size.add(word)  # Update total vocabulary
                 if word not in word_count[emotion_name]:
                     word_count[emotion_name][word] = 0
                 word_count[emotion_name][word] += 1
@@ -38,8 +40,8 @@ class NaiveBayesClassifier:
         for emotion_name, counts in word_count.items():
             total_words = sum(counts.values())
             for word, count in counts.items():
-                self.word_probs[emotion_name][word] = (count + 1) / (
-                            total_words + len(self.class_vocabulary_size[emotion_name]))
+                # Laplace smoothing with vocabulary size
+                self.word_probs[emotion_name][word] = (count + 1) / (total_words + len(self.total_vocabulary_size))
 
     def predict(self, negation_handled_text):
         posterior_probs = {emotion: np.log(self.class_probs[emotion]) for emotion in self.emotion_classes.values()}
@@ -47,9 +49,12 @@ class NaiveBayesClassifier:
         for word in negation_handled_text.split():
             for emotion_name in self.emotion_classes.values():
                 if word in self.word_probs[emotion_name]:
+                    # Multiply probabilities directly in log space
                     posterior_probs[emotion_name] += np.log(self.word_probs[emotion_name][word])
                 else:
-                    posterior_probs[emotion_name] += np.log(1 / (len(self.class_vocabulary_size[emotion_name]) + 1))
+                    # Use Laplace smoothed probability for unseen words
+                    posterior_probs[emotion_name] += np.log(
+                        1 / (len(self.total_vocabulary_size) + len(self.class_vocabulary_size[emotion_name])))
 
         predicted_emotion = max(posterior_probs, key=posterior_probs.get)
         return predicted_emotion
