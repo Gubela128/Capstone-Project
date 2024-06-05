@@ -11,7 +11,7 @@ class SupportVectorMachine:
             4: 'fear',
             5: 'surprise'
         }
-        self.model = svm.LinearSVC()
+        self.model = svm.LinearSVC(dual='auto')
 
     def fit(self, X, y):
         self.model.fit(X, y)
