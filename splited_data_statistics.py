@@ -10,7 +10,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 
 def split_data(data, train_size, test_size, eval_size):
-    random.shuffle(data)  
+    random.shuffle(data)
     train_data, temp_data = train_test_split(data, test_size=(test_size + eval_size), random_state=42)
     test_data, eval_data = train_test_split(temp_data, test_size=eval_size / (test_size + eval_size), random_state=42)
     return train_data, test_data, eval_data
@@ -35,11 +35,7 @@ def preprocess_single(data_preparation, text):
         'lemmatized_text': '',
         'negation_handled_text': '',
     }]
-    preprocessed_data = data_preparation.lower_case(preprocessed_data)
-    preprocessed_data = data_preparation.remove_stopwords(preprocessed_data)
-    preprocessed_data = data_preparation.remove_special_characters(preprocessed_data)
-    preprocessed_data = data_preparation.lemmatize_text(preprocessed_data)
-    preprocessed_data = data_preparation.handle_negations(preprocessed_data)
+    prepare_data(data_preparation, preprocessed_data)
     return preprocessed_data[0]['negation_handled_text']
 
 
@@ -67,10 +63,13 @@ def evaluate_model(classifier, data_preparation, vectorizer, data, model_type):
             text_vector = vectorizer.transform([negation_handled_text]).toarray()
             predicted_emotion = classifier.predict(text_vector)[0]
 
-        y_true.append(true_label)
+        y_true.append(classifier.emotion_classes[int(true_label)])
         y_pred.append(predicted_emotion)
 
-    return classification_report(y_true, y_pred, target_names=classifier.emotion_classes.values(), output_dict=True)
+    unique_classes = sorted(set(y_true).union(set(y_pred)))
+    target_names = unique_classes
+
+    return classification_report(y_true, y_pred, target_names=target_names, output_dict=True)
 
 
 def main():
@@ -93,11 +92,13 @@ def main():
         prepared_eval_data = prepare_data(data_preparation, eval_data)
 
         nb_classifier = NaiveBayesClassifier()
-        results[split_key]['NaiveBayes'] = evaluate_model(nb_classifier, data_preparation, None, prepared_eval_data, 'NaiveBayes')
+        results[split_key]['NaiveBayes'] = evaluate_model(nb_classifier, data_preparation, None, prepared_eval_data,
+                                                          'NaiveBayes')
 
         svm_classifier = SupportVectorMachine()
         vectorizer = TfidfVectorizer()
-        results[split_key]['SVM'] = evaluate_model(svm_classifier, data_preparation, vectorizer, prepared_eval_data, 'SVM')
+        results[split_key]['SVM'] = evaluate_model(svm_classifier, data_preparation, vectorizer, prepared_eval_data,
+                                                   'SVM')
 
     with open('data/evaluation_results.json', 'w') as file:
         json.dump(results, file, indent=4)

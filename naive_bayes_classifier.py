@@ -43,9 +43,7 @@ class NaiveBayesClassifier:
                 # Laplace smoothing with vocabulary size
                 self.word_probs[emotion_name][word] = (count + 1) / (total_words + len(self.total_vocabulary_size))
 
-    def predict(self, negation_handled_text):
-        posterior_probs = {emotion: np.log(self.class_probs[emotion]) for emotion in self.emotion_classes.values()}
-
+    def predict_loop(self, negation_handled_text, posterior_probs):
         for word in negation_handled_text.split():
             for emotion_name in self.emotion_classes.values():
                 if word in self.word_probs[emotion_name]:
@@ -56,5 +54,18 @@ class NaiveBayesClassifier:
                     posterior_probs[emotion_name] += np.log(
                         1 / (len(self.total_vocabulary_size) + len(self.class_vocabulary_size[emotion_name])))
 
+    def predict(self, negation_handled_text):
+        posterior_probs = {emotion: np.log(self.class_probs[emotion]) for emotion in self.emotion_classes.values()}
+        self.predict_loop(negation_handled_text, posterior_probs)
         predicted_emotion = max(posterior_probs, key=posterior_probs.get)
         return predicted_emotion
+
+    def predict_with_probabilities(self, negation_handled_text):
+        posterior_probs = {emotion: np.log(self.class_probs[emotion]) for emotion in self.emotion_classes.values()}
+        self.predict_loop(negation_handled_text, posterior_probs)
+        normal_probs = {emotion: np.exp(posterior_probs[emotion]) for emotion in posterior_probs}
+        total_prob = sum(normal_probs.values())
+        probabilities = {emotion: prob / total_prob for emotion, prob in normal_probs.items()}
+
+        predicted_emotion = max(probabilities, key=probabilities.get)
+        return predicted_emotion, probabilities
