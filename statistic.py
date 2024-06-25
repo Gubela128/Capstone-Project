@@ -1,6 +1,6 @@
 from sklearn.metrics import classification_report
 from data_preparation import DataPreparation
-from emotion_detection import EmotionDetection
+from training_data_preparation import TrainingDataPreparation
 from naive_bayes_classifier import NaiveBayesClassifier
 
 
@@ -12,7 +12,7 @@ def get_key_from_value(dictionary, value):
 
 
 def main():
-    emotion_detection = EmotionDetection()
+    emotion_detection = TrainingDataPreparation()
     data_preparation = DataPreparation()
     classifier = NaiveBayesClassifier()
 

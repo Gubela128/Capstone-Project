@@ -2,7 +2,7 @@ import json
 import random
 from sklearn.model_selection import train_test_split
 from data_preparation import DataPreparation
-from emotion_detection import EmotionDetection
+from training_data_preparation import TrainingDataPreparation
 from naive_bayes_classifier import NaiveBayesClassifier
 from support_vector_machine import SupportVectorMachine
 from sklearn.metrics import classification_report
@@ -73,7 +73,7 @@ def evaluate_model(classifier, data_preparation, vectorizer, data, model_type):
 
 
 def main():
-    emotion_detection = EmotionDetection()
+    emotion_detection = TrainingDataPreparation()
     data_preparation = DataPreparation()
     data = emotion_detection.read_data('data/training.json')
 

@@ -3,7 +3,7 @@ import json
 from data_preparation import DataPreparation
 
 
-class EmotionDetection:
+class TrainingDataPreparation(DataPreparation):
 
     @classmethod
     def read_data(cls, file_name):
@@ -30,4 +30,4 @@ class EmotionDetection:
 
 
 if __name__ == '__main__':
-    EmotionDetection.main()
+    TrainingDataPreparation.main()

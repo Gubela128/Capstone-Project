@@ -1,12 +1,12 @@
 from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
-from emotion_detection import EmotionDetection
+from training_data_preparation import TrainingDataPreparation
 from support_vector_machine import SupportVectorMachine
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 
 def main():
-    emotion_detection = EmotionDetection()
+    emotion_detection = TrainingDataPreparation()
     training_data = emotion_detection.read_data('data/prepared_training_data.json')
 
     X = [item['lemmatized_text'] for item in training_data]

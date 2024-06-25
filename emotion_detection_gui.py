@@ -3,7 +3,7 @@ from tkinter import messagebox
 from tkinter.ttk import Style
 from tkinter import ttk
 from data_preparation import DataPreparation
-from emotion_detection import EmotionDetection
+from training_data_preparation import TrainingDataPreparation
 from naive_bayes_classifier import NaiveBayesClassifier
 from support_vector_machine import SupportVectorMachine
 from ttkthemes import ThemedStyle
@@ -75,7 +75,7 @@ class EmotionApp:
         self.naive_bayes = NaiveBayesClassifier()
         self.svm = SupportVectorMachine()
 
-        emotion_detection = EmotionDetection()
+        emotion_detection = TrainingDataPreparation()
         self.training_data = emotion_detection.read_data('data/prepared_training_data.json')
 
         # Initialize Naive Bayes
